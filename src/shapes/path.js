@@ -278,7 +278,6 @@ function dirByAngle(s, e) {
 			: numInRangeIncludeEnds(rad, 2.4, 3.2) || numInRangeIncludeEnds(rad, -3.2, -2.4) ? 'right' : 'bottom';
 }
 
-/** @param {PathData} data */
 function pathCalc(data) {
 	let coef = Math.hypot(
 		data.s.data.position.x - data.e.data.position.x,
@@ -301,8 +300,323 @@ function pathCalc(data) {
 			: pathEnd.dir === 'bottom' ? pathEnd.position.y + coef : pathEnd.position.y - coef;
 	}
 
-	return `M ${data.s.data.position.x} ${data.s.data.position.y} C ${cx(data.s.data)} ${cy(data.s.data)}, ` +
-		`${cx(data.e.data)} ${cy(data.e.data)}, ${data.e.data.position.x} ${data.e.data.position.y}`;
+        // ------>
+	if (data.s.data.dir === 'right' && data.e.data.dir === 'left' ) {  
+              if  (data.s.data.position.x > data.e.data.position.x) {
+		      var mid_point_y= 0;
+		      if (data.e.data.position.y > data.s.data.position.y){
+		          mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+		      } else {
+		          mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+		      }
+
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${mid_point_y}` +
+		             `L ${data.e.data.position.x - coef } ${mid_point_y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	      } else {
+		      console.log("route 2");
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+              }
+
+	}
+
+        // <------
+	else if (data.s.data.dir === 'left' && data.e.data.dir === 'right' ) {  
+		console.log("left -> right");
+              if  (data.e.data.position.x > data.s.data.position.x) {
+		      var mid_point_y= 0;
+		      if (data.e.data.position.y > data.s.data.position.y){
+		          mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+		      } else {
+		          mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+		      }
+
+   	              return `M ${data.e.data.position.x}         ${data.e.data.position.y}` +
+		             `L ${data.e.data.position.x + coef } ${data.e.data.position.y}` +
+		             `L ${data.e.data.position.x + coef } ${mid_point_y}` +
+		             `L ${data.s.data.position.x - coef } ${mid_point_y}` +
+   	        	     `L ${data.s.data.position.x - coef } ${data.s.data.position.y}` +
+		 	     `L ${data.s.data.position.x}         ${data.s.data.position.y}` ;
+	      } else {
+   	              return `M ${data.e.data.position.x}         ${data.e.data.position.y}` +
+		             `L ${data.e.data.position.x + coef } ${data.e.data.position.y}` +
+   	        	     `L ${data.s.data.position.x - coef } ${data.s.data.position.y}` +
+		 	     `L ${data.s.data.position.x}         ${data.s.data.position.y}` ;
+              }
+
+	
+       } 
+
+        //   |
+	//   ^
+	else if (data.s.data.dir === 'bottom' && data.e.data.dir === 'top' ) {  
+              if  (data.s.data.position.y > data.e.data.position.y) {
+		      var mid_point_x= 0;
+		      if (data.e.data.position.x > data.s.data.position.x){
+		          mid_point_x = data.s.data.position.x + (Math.abs(data.s.data.position.x - data.e.data.position.x)/2);
+		      } else {
+		          mid_point_x = data.e.data.position.x + (Math.abs(data.s.data.position.x - data.e.data.position.x)/2);
+		      }
+   	              return `M ${data.e.data.position.x}         ${data.e.data.position.y}` +
+		             `L ${data.e.data.position.x}         ${data.e.data.position.y - coef}` +
+		             `L ${mid_point_x}                    ${data.e.data.position.y - coef}` +
+   	        	     `L ${mid_point_x}                    ${data.s.data.position.y + coef}` +
+   	        	     `L ${data.s.data.position.x}         ${data.s.data.position.y + coef}` +
+		 	     `L ${data.s.data.position.x}         ${data.s.data.position.y}` ;
+	      } else {
+   	              return `M ${data.e.data.position.x}         ${data.e.data.position.y}` +
+		             `L ${data.e.data.position.x}         ${data.e.data.position.y - coef}` +
+   	        	     `L ${data.s.data.position.x}         ${data.s.data.position.y + coef}` +
+		 	     `L ${data.s.data.position.x}         ${data.s.data.position.y}` ;
+              }
+
+	
+       } 
+        //   ^
+	//   |
+
+	else if (data.s.data.dir === 'top' && data.e.data.dir === 'bottom' ) {  
+              if  (data.e.data.position.y > data.s.data.position.y) {
+		      var mid_point_x= 0;
+		      if (data.s.data.position.x > data.e.data.position.x){
+		          mid_point_x = data.e.data.position.x + (Math.abs(data.s.data.position.x - data.e.data.position.x)/2);
+		      } else {
+		          mid_point_x = data.s.data.position.x + (Math.abs(data.s.data.position.x - data.e.data.position.x)/2);
+		      }
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x}         ${data.s.data.position.y - coef}` +
+		             `L ${mid_point_x}                    ${data.s.data.position.y - coef}` +
+   	        	     `L ${mid_point_x}                    ${data.e.data.position.y + coef}` +
+   	        	     `L ${data.e.data.position.x}         ${data.e.data.position.y + coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	      } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x}         ${data.s.data.position.y - coef}` +
+   	        	     `L ${data.e.data.position.x}         ${data.e.data.position.y + coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+              }
+
+	
+       } 
+	if (data.s.data.dir === 'right' && data.e.data.dir === 'top' ) {  
+              if  (data.s.data.position.x > data.e.data.position.x - coef*2) {
+                    if  (data.s.data.position.y > data.e.data.position.y ) {
+	                    var mid_point_y= 0;
+	                    if (data.e.data.position.y > data.s.data.position.y){
+	                        mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    } else {
+	                        mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    }
+
+   	                    return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${mid_point_y}` +
+	                           `L ${data.e.data.position.x - coef } ${mid_point_y}` +
+   	              	           `L ${data.e.data.position.x - coef } ${data.e.data.position.y - coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y - coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	            } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.s.data.position.x + coef } ${data.e.data.position.y - coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y - coef }` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+
+	            }
+	      } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y - coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y - coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+              }
+
+	}
+
+	if (data.s.data.dir === 'right' && data.e.data.dir === 'bottom' ) {  
+              if  (data.s.data.position.x > data.e.data.position.x - coef*2) {
+                    if  (data.s.data.position.y > data.e.data.position.y ) {
+	                    var mid_point_y= 0;
+	                    if (data.e.data.position.y > data.s.data.position.y){
+	                        mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    } else {
+	                        mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    }
+
+   	                    return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${mid_point_y}` +
+	                           `L ${data.e.data.position.x  } ${mid_point_y}` +
+   	              	           //`L ${data.e.data.position.x - coef } ${data.e.data.position.y + coef}` +
+	               	           //`L ${data.e.data.position.x}         ${data.e.data.position.y + coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	            } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.s.data.position.x + coef } ${data.e.data.position.y + coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y + coef }` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+
+	            }
+	      } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y + coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y + coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+              }
+
+	}
+
+	if (data.s.data.dir === 'left' && data.e.data.dir === 'top' ) {  
+	      console.log("left -> top");
+              if  (data.s.data.position.x > data.e.data.position.x - coef*2) {
+                    if  (data.s.data.position.y > data.e.data.position.y ) {
+	                    var mid_point_y= 0;
+	                    if (data.e.data.position.y > data.s.data.position.y){
+	                        mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    } else {
+	                        mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    }
+                             // 左上
+   	                    return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x - coef } ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x - coef } ${mid_point_y}` +
+	                           `L ${data.e.data.position.x - coef } ${mid_point_y}` +
+   	              	           `L ${data.e.data.position.x - coef } ${data.e.data.position.y - coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y - coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	            } else {
+                      // 左下
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x - coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.s.data.position.x - coef } ${data.e.data.position.y - coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y - coef }` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+
+	            }
+	      } else {
+                    if  (data.s.data.position.y > data.e.data.position.y ) {
+			    //右上
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x - coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y - coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y - coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+                    } else {
+			    //右下
+		    }
+              }
+
+	}
+
+	if (data.s.data.dir === 'left' && data.e.data.dir === 'bottom' ) {  
+	      console.log("left -> bottom");
+              if  (data.s.data.position.x > data.e.data.position.x - coef*2) {
+                    if  (data.s.data.position.y > data.e.data.position.y ) {
+	                    var mid_point_y= 0;
+	                    if (data.e.data.position.y > data.s.data.position.y){
+	                        mid_point_y = data.s.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    } else {
+	                        mid_point_y = data.e.data.position.y + (Math.abs(data.s.data.position.y - data.e.data.position.y)/2);
+	                    }
+
+   	                    return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+	                           `L ${data.s.data.position.x + coef } ${mid_point_y}` +
+	                           `L ${data.e.data.position.x  } ${mid_point_y}` +
+   	              	           //`L ${data.e.data.position.x - coef } ${data.e.data.position.y + coef}` +
+	               	           //`L ${data.e.data.position.x}         ${data.e.data.position.y + coef}` +
+	               	           `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+	            } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.s.data.position.x + coef } ${data.e.data.position.y + coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y + coef }` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+
+	            }
+	      } else {
+   	              return `M ${data.s.data.position.x}         ${data.s.data.position.y}` +
+		             `L ${data.s.data.position.x + coef } ${data.s.data.position.y}` +
+   	        	     `L ${data.e.data.position.x - coef } ${data.e.data.position.y + coef }` +
+   	        	     `L ${data.e.data.position.x        } ${data.e.data.position.y + coef}` +
+		 	     `L ${data.e.data.position.x}         ${data.e.data.position.y}` ;
+              }
+
+	}
+	else {
+
+	      return `M ${data.s.data.position.x} ${data.s.data.position.y} L ${cx(data.s.data)} ${cy(data.s.data)}  ` +
+	        	`L ${cx(data.e.data)} ${cy(data.e.data)} L ${data.e.data.position.x} ${data.e.data.position.y}`;
+
+
+       }
+}
+
+/** @param {PathData} data */
+function _pathCalc(data) {
+	console.log(data);
+	// data
+	// e.data.dir:bottom|top|left|right     e.data.position.x/y
+	// s.data.dir:bottom|top|left|right     s.data.position.x/y
+	
+	let coef = Math.hypot(
+		data.s.data.position.x - data.e.data.position.x,
+		data.s.data.position.y - data.e.data.position.y) * 0.5;
+	coef = coef > 70
+		? 70
+		: coef < 15 ? 15 : coef;
+
+	/** @param {PathEndData} pathEnd */
+	function cx(pathEnd) {
+		return (pathEnd.dir === 'right' || pathEnd.dir === 'left')
+			? pathEnd.dir === 'right' ? pathEnd.position.x + coef : pathEnd.position.x - coef
+			: pathEnd.position.x;
+	}
+
+	/** @param {PathEndData} pathEnd */
+	function cy(pathEnd) {
+		return (pathEnd.dir === 'right' || pathEnd.dir === 'left')
+			? pathEnd.position.y
+			: pathEnd.dir === 'bottom' ? pathEnd.position.y + coef : pathEnd.position.y - coef;
+	}
+
+        // Bezier Curve
+	//return `M ${data.s.data.position.x} ${data.s.data.position.y} C ${cx(data.s.data)} ${cy(data.s.data)}, ` +
+	//	`${cx(data.e.data)} ${cy(data.e.data)}, ${data.e.data.position.x} ${data.e.data.position.y}`;
+	
+	
+	//	edge = top/bottom       edge = left/right
+	//              |                    ----
+	//            /                     /
+	//          /                     /
+	//        /                     /
+	//      |                  -----
+	
+	return `M ${data.s.data.position.x} ${data.s.data.position.y} L ${cx(data.s.data)} ${cy(data.s.data)}  ` +
+		`L ${cx(data.e.data)} ${cy(data.e.data)} L ${data.e.data.position.x} ${data.e.data.position.y}`;
+	
+	//	edge = top/bottom
+	//                   |
+	//      +------------+
+	//	|
+	//return `M ${data.s.data.position.x} ${data.s.data.position.y} L ${cx(data.s.data)} ${cy(data.s.data)}  ` +
+	//	`L ${cx(data.e.data)} ${cy(data.s.data)} L ${data.e.data.position.x} ${data.e.data.position.y}`;
+	        //                              e->s
+	//	edge = left/right
+	//       ------+   
+	//             |
+	//	       +---------
+	//return `M ${data.s.data.position.x} ${data.s.data.position.y} L ${cx(data.s.data)} ${cy(data.s.data)}  ` +
+	//	`L ${cx(data.s.data)} ${cy(data.e.data)} L ${data.e.data.position.x} ${data.e.data.position.y}`;
+	        //          e->s
 }
 
 /** @param {Element} element */
